@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kalkulator Harga Cetakan 3D</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f8fafc;
+      margin: 0;
+      padding: 2rem;
+      color: #1e293b;
+    }
+    h1 { text-align: center; color: #0f172a; }
+    .card {
+      max-width: 650px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    label { display: block; margin-top: 1rem; font-weight: 600; }
+    .input-with-unit { position: relative; }
+    .input-with-unit input {
+      width: 100%;
+      padding: 8px 36px 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    .input-with-unit span {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-weight: 600;
+    }
+    input[type="number"], select {
+      width: 100%;
+      padding: 8px 10px;
+      margin-top: 4px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    button {
+      background: #2563eb; color: #fff; border: none;
+      padding: 10px 20px; font-size: 1rem; border-radius: 10px;
+      cursor: pointer; margin-top: 1.5rem; width: 100%;
+    }
+    button:hover { background: #1e40af; }
+    .result {
+      background: #f1f5f9; padding: 1rem; margin-top: 2rem; border-radius: 10px;
+    }
+    .bundar {
+      color: #0f766e;
+      font-weight: bold;
+      margin-left: 8px;
+    }
+    .addons {
+      margin-top: 1rem;
+      background: #f9fafb;
+      padding: 0.8rem;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+    }
+    .addons label {
+      display: flex;
+      align-items: center;
+      font-weight: 500;
+      gap: 8px;
+      cursor: pointer;
+      margin: 6px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Kalkulator Harga Cetakan 3D</h1>
+
+  <div class="card">
+    <label>⚙️ Jenis Cetakan:</label>
+    <select id="jenisCetakan">
+      <option value="figura">🧍‍♂️ Figura</option>
+      <option value="part">⚙️ Part / Komponen</option>
+    </select>
+
+    <label>⚖️ Berat Objek:</label>
+    <div class="input-with-unit">
+      <input type="number" id="berat" placeholder="Contoh: 105.27" step="0.01">
+      <span>g</span>
+    </div>
+
+    <label>🧵 Jenis Filament:</label>
+    <select id="filament" onchange="setHargaAuto()">
+      <option value="pla">PLA</option>
+      <option value="petg">PETG</option>
+      <option value="abs">ABS</option>
+    </select>
+
+    <label>💰 Harga Filament (RM / 1000g):</label>
+    <input type="number" id="harga" step="0.01">
+
+    <label>⏱️ Tempoh Cetakan:</label>
+    <div style="display:flex; gap:10px;">
+      <input type="number" id="jam" placeholder="Jam">
+      <input type="number" id="minit" placeholder="Minit">
+    </div>
+
+    <div class="addons">
+      <strong>🧩 Tambahan (Premium Sahaja):</strong>
+      <label><input type="checkbox" id="kemasan"> 🪶 Kemasan (+RM0.20)</label>
+      <label><input type="checkbox" id="cat"> 🎨 Cat (+RM1.00)</label>
+      <label><input type="checkbox" id="sanding"> 🪵 Sanding (ikut jenis)</label>
+    </div>
+
+    <button id="kiraBtn" onclick="kira()">Kira Harga</button>
+
+    <div class="result" id="hasil">
+      <p>Masukkan data untuk kira harga.</p>
+    </div>
+  </div>
+
+  <script>
+    const hargaDefault = {
+      pla: 45.90,
+      petg: 49.90,
+      abs: 59.90,
+    };
+
+    const margin = {
+      standard: 0.70,
+      premium: 1.20
+    };
+
+    function setHargaAuto() {
+      const jenis = document.getElementById("filament").value;
+      document.getElementById("harga").value = hargaDefault[jenis] || 0;
+    }
+
+    function formatMasa(jam, minit) {
+      let teks = "";
+      if (jam > 0) teks += `${jam} jam `;
+      if (minit > 0) teks += `${minit} minit`;
+      return teks.trim() || "0 minit";
+    }
+
+    function kira() {
+      const berat = parseFloat(document.getElementById("berat").value);
+      const hargaFilament = parseFloat(document.getElementById("harga").value);
+      const jam = parseFloat(document.getElementById("jam").value) || 0;
+      const minit = parseFloat(document.getElementById("minit").value) || 0;
+      const jenisCetakan = document.getElementById("jenisCetakan").value;
+
+      if (isNaN(berat) || isNaN(hargaFilament)) {
+        document.getElementById("hasil").innerHTML = "<p>⚠️ Sila isi berat & harga dengan betul!</p>";
+        return;
+      }
+
+      const totalJam = jam + (minit / 60);
+      const masaTeks = formatMasa(jam, minit);
+
+      // Kos asas (filament + elektrik)
+      const kosFilament = berat * (hargaFilament / 1000);
+      const kosElektrik = totalJam * 0.25;
+      const kosSebenar = kosFilament + kosElektrik;
+
+      // Tambahan (untuk Premium sahaja)
+      let kosPremiumExtra = 0;
+      let senaraiPremium = [];
+
+      if (document.getElementById("kemasan").checked) {
+        kosPremiumExtra += 0.20;
+        senaraiPremium.push("Kemasan (+RM0.20)");
+      }
+      if (document.getElementById("cat").checked) {
+        kosPremiumExtra += 1.00;
+        senaraiPremium.push("Cat (+RM1.00)");
+      }
+      if (document.getElementById("sanding").checked) {
+        const sandingHarga = (jenisCetakan === "figura") ? 0.20 : 0.10;
+        kosPremiumExtra += sandingHarga;
+        senaraiPremium.push(`Sanding (+RM${sandingHarga.toFixed(2)})`);
+      }
+
+      // Harga jual
+      const hargaMin = Math.ceil(kosSebenar + 1).toFixed(2);
+      const hargaStd = kosSebenar * (1 + margin.standard);
+      const hargaPrem = (kosSebenar * (1 + margin.premium)) + kosPremiumExtra;
+
+      const hargaStdBundar = Math.ceil(hargaStd).toFixed(2);
+      const hargaPremBundar = Math.ceil(hargaPrem).toFixed(2);
+      const tambahanText = senaraiPremium.length > 0 ? senaraiPremium.join(", ") : "Tiada tambahan";
+
+      document.getElementById("hasil").innerHTML = `
+        <h3>📊 Ringkasan Kiraan:</h3>
+        <p>🧩 Jenis Cetakan: <b>${jenisCetakan === "figura" ? "Figura" : "Part / Komponen"}</b></p>
+        <p>💡 Kos Filament: RM ${kosFilament.toFixed(2)}</p>
+        <p>⚡ Kos Waktu (${masaTeks} × RM0.25/jam): RM ${kosElektrik.toFixed(2)}</p>
+        <p>🔹 Jumlah Kos Sebenar: <b>RM ${kosSebenar.toFixed(2)}</b></p>
+        <hr>
+        <h3>💰 Anggaran Harga Jual:</h3>
+        <p>🟢 Minimum (Kos + RM1): <b>RM ${hargaMin}</b></p>
+        <p>🔵 Standard (+70%): <b>RM ${hargaStd.toFixed(2)}</b> <span class="bundar">→ RM ${hargaStdBundar}</span></p>
+        <p>🟣 Premium (+120% + tambahan): <b>RM ${hargaPrem.toFixed(2)}</b> <span class="bundar">→ RM ${hargaPremBundar}</span></p>
+        <p>🎨 Tambahan Premium: ${tambahanText}</p>
+      `;
+    }
+
+    // Tekan Enter untuk PC
+    function isMobileDevice() {
+      return /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    }
+    if (!isMobileDevice()) {
+      document.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          document.getElementById("kiraBtn").click();
+        }
+      });
+    }
+
+    window.onload = setHargaAuto;
+  </script>
+</body>
+</html>
