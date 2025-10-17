@@ -4,244 +4,108 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kalkulator Harga Cetakan 3D</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-
-  body {
-    font-family: 'Poppins', sans-serif;
-    background: #f0f4f8;
-    margin: 0;
-    padding: 2rem;
-    color: #1e293b;
-  }
-
-  h1, h2 { text-align: center; color: #0f172a; }
-  .container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 2rem;
-    justify-content: center;
-  }
-
-  .card {
-    background: #fff;
-    padding: 1.8rem;
-    border-radius: 16px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    max-width: 400px;
-    flex: 1 1 350px;
-  }
-
-  label { display: block; margin-top: 1rem; font-weight: 600; }
-  input[type="text"], input[type="number"], select {
-    width: 100%;
-    padding: 8px 10px;
-    margin-top: 4px;
-    border: 1px solid #cbd5e1;
-    border-radius: 8px;
-    font-size: 1rem;
-  }
-
-  .input-with-unit { position: relative; }
-  .input-with-unit span {
-    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
-    color: #64748b; font-weight: 600;
-  }
-  button {
-    background: #2563eb; color: #fff; border: none;
-    padding: 10px 20px; font-size: 1rem; border-radius: 10px;
-    cursor: pointer; margin-top: 1rem; width: 100%;
-    transition: background 0.3s;
-  }
-  button:hover { background: #1e40af; }
-  .result { background: #f1f5f9; padding: 1rem; margin-top: 1.5rem; border-radius: 10px; }
-  ul { margin: 0.5rem 0 0 1rem; padding: 0; list-style: none; }
-  .bundar { color: #0f766e; font-weight: bold; margin-left: 8px; }
-  .item-flex { display:flex; justify-content:space-between; align-items:center; }
-  .item-flex button { width: auto; padding: 2px 8px; background:#ef4444; margin:0; font-size:0.85rem; border-radius:5px; }
-  .addons, .manage-section { margin-top: 1rem; background: #f9fafb; padding: 0.8rem; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .addons label, .manage-section label { display: flex; align-items: center; font-weight: 500; gap: 8px; cursor: pointer; margin: 6px 0; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Kalkulator Harga Cetakan 3D</h1>
-
 <div class="container">
 
-  <!-- Pengurusan Filament & Tambahan -->
-  <div class="card manage-section">
-    <h2>⚙️ Pengurusan Filament & Tambahan</h2>
+<h1>Kalkulator Harga Cetakan 3D</h1>
 
-    <label>Jenis Filament Baru:</label>
-    <input type="text" id="filamentBaru" placeholder="Contoh: TPU">
+<!-- Sub 1 -->
+<div class="card sub1">
+  <label>⚙️ Jenis Cetakan:</label>
+  <select id="jenisCetakan"></select>
 
-    <label>Harga Filament (RM / 1000g):</label>
-    <input type="number" id="hargaBaru" step="0.01">
-
-    <button onclick="tambahFilament()">Tambah / Kemas Kini Filament</button>
-
-    <h3>📌 Senarai Harga Filament:</h3>
-    <ul id="senaraiFilament"></ul>
-
-    <h3>📌 Kemaskini Harga Tambahan:</h3>
-    <label>🪶 Kemasan (RM): <input type="number" id="hargaKemasan" step="0.01" value="0.20"></label>
-    <label>🎨 Cat (RM): <input type="number" id="hargaCat" step="0.01" value="1.00"></label>
-    <label>🪵 Sanding (Figura) (RM): <input type="number" id="hargaSandingFigura" step="0.01" value="0.20"></label>
-    <label>🪵 Sanding (Part) (RM): <input type="number" id="hargaSandingPart" step="0.01" value="0.10"></label>
+  <label>⚖️ Berat Objek:</label>
+  <div class="input-with-unit">
+    <input type="text" id="berat" placeholder="Contoh: 105.27">
+    <span>g</span>
   </div>
 
-  <!-- Kalkulator -->
-  <div class="card">
-    <label>⚙️ Jenis Cetakan:</label>
-    <select id="jenisCetakan">
-      <option value="figura">🧍‍♂️ Figura</option>
-      <option value="part">⚙️ Part / Komponen</option>
-    </select>
+  <label>🧵 Jenis Filament:</label>
+  <select id="filament"></select>
 
-    <label>⚖️ Berat Objek:</label>
-    <div class="input-with-unit">
-      <input type="number" id="berat" placeholder="Contoh: 105.27" step="0.01">
-      <span>g</span>
-    </div>
-
-    <label>🧵 Jenis Filament:</label>
-    <select id="filament" onchange="setHargaAuto()"></select>
-
-    <label>💰 Harga Filament (RM / 1000g):</label>
-    <input type="number" id="harga" step="0.01">
-
-    <label>⏱️ Tempoh Cetakan:</label>
-    <div style="display:flex; gap:10px;">
-      <input type="number" id="jam" placeholder="Jam">
-      <input type="number" id="minit" placeholder="Minit">
-    </div>
-
-    <div class="addons">
-      <strong>🧩 Tambahan (Premium Sahaja):</strong>
-      <label><input type="checkbox" id="kemasan"> 🪶 Kemasan</label>
-      <label><input type="checkbox" id="cat"> 🎨 Cat</label>
-      <label><input type="checkbox" id="sanding"> 🪵 Sanding</label>
-    </div>
-
-    <button id="kiraBtn" onclick="kira()">Kira Harga</button>
-
-    <div class="result" id="hasil">
-      <p>Masukkan data untuk kira harga.</p>
-    </div>
+  <label>💰 Harga Filament:</label>
+  <div class="input-with-unit">
+    <input type="text" id="harga">
+    <span>RM</span>
   </div>
 
+  <label>⏱️ Tempoh Cetakan:</label>
+  <div class="time-inputs">
+    <input type="number" id="jam" placeholder="7"><span>Jam</span>
+    <input type="number" id="minit" placeholder="30"><span>Minit</span>
+  </div>
 </div>
 
-<script>
-  const hargaDefault = { pla: 45.90, petg: 49.90, abs: 59.90 };
-  const margin = { standard: 0.70, premium: 1.20 };
+<!-- Sub 2 -->
+<div class="card sub2">
+  <div class="addons">
+    <strong>🧩 Tambahan (Premium Sahaja)</strong>
+    <div class="addon-group">
+      <label><input type="checkbox" id="kemasan"> Kemasan (+RM0.20)</label>
+      <label><input type="checkbox" id="cat"> Cat (+RM1.00)</label>
+      <label><input type="checkbox" id="sanding"> Sanding</label>
+    </div>
+  </div>
 
-  function kemaskiniDropdown() {
-    const select = document.getElementById("filament");
-    select.innerHTML = "";
-    const senarai = document.getElementById("senaraiFilament");
-    senarai.innerHTML = "";
-    for (const key in hargaDefault) {
-      // Dropdown
-      const option = document.createElement("option");
-      option.value = key;
-      option.textContent = key.toUpperCase();
-      select.appendChild(option);
+  <button id="kiraBtn" class="kiraBtn">KIRA HARGA</button>
 
-      // Senarai dengan butang Delete
-      const li = document.createElement("li");
-      const div = document.createElement("div");
-      div.className = "item-flex";
-      div.innerHTML = `<span>${key.toUpperCase()}: RM${hargaDefault[key].toFixed(2)}</span>`;
-      const btn = document.createElement("button");
-      btn.textContent = "Delete";
-      btn.onclick = () => { delete hargaDefault[key]; kemaskiniDropdown(); };
-      div.appendChild(btn);
-      li.appendChild(div);
-      senarai.appendChild(li);
-    }
-    setHargaAuto();
-  }
+  <div class="hargaButtons">
+    <button onclick="showHarga('min')">MINIMUM</button>
+    <button onclick="showHarga('std')">STANDARD</button>
+    <button onclick="showHarga('prem')">PREMIUM</button>
+  </div>
 
-  function tambahFilament() {
-    const nama = document.getElementById("filamentBaru").value.trim().toLowerCase();
-    const harga = parseFloat(document.getElementById("hargaBaru").value);
-    if (!nama || isNaN(harga)) { alert("Sila masukkan nama filament & harga dengan betul!"); return; }
-    hargaDefault[nama] = harga;
-    kemaskiniDropdown();
-    document.getElementById("filamentBaru").value = "";
-    document.getElementById("hargaBaru").value = "";
-  }
+  <div id="formulaContainer" class="formula-container">
+    <div id="formulaStep"></div>
+    <div id="hargaAkhirContainer" class="hargaAkhir">
+      <strong>Jumlah Keseluruhan:</strong> <span id="hargaAkhir"></span>
+    </div>
+    <div class="kos-wrapper">
+      <button id="toggleKosBtn" class="kosBtn"></button>
+      <span></span>
+    </div>
+    <div id="totalKosContainer" style="display:none;"></div>
+  </div>
+</div>
 
-  function setHargaAuto() {
-    const jenis = document.getElementById("filament").value;
-    document.getElementById("harga").value = hargaDefault[jenis] || 0;
-  }
+<!-- Sub 3: Pengurusan Filament & Tambahan -->
+<button id="toggleManageBtn" class="manage-toggle">SHOW / HIDE PENGURUSAN</button>
+<div class="card manage-section" id="manageWrapper" style="display:none;">
+  <h2>⚙️ Pengurusan Filament & Tambahan</h2>
 
-  function formatMasa(jam, minit) {
-    let teks = "";
-    if (jam>0) teks+=`${jam} jam `;
-    if (minit>0) teks+=`${minit} minit`;
-    return teks.trim() || "0 minit";
-  }
+  <div class="manage-filament">
+    <label>Nama Filament Baru:
+      <input type="text" id="filamentBaru" style="width:120px;">
+    </label>
+  <div></div>
+    <label>Harga Filament (RM / 1000g):
+      <input type="number" id="hargaBaru" step="0.01">
+    </label>
+  </div>
 
-  function kira() {
-    const berat = parseFloat(document.getElementById("berat").value);
-    const hargaFilament = parseFloat(document.getElementById("harga").value);
-    const jam = parseFloat(document.getElementById("jam").value)||0;
-    const minit = parseFloat(document.getElementById("minit").value)||0;
-    const jenisCetakan = document.getElementById("jenisCetakan").value;
-    if(isNaN(berat)||isNaN(hargaFilament)){document.getElementById("hasil").innerHTML="<p>⚠️ Sila isi berat & harga dengan betul!</p>"; return;}
-    const totalJam = jam + (minit/60);
-    const masaTeks = formatMasa(jam,minit);
-    const kosFilament = berat*(hargaFilament/1000);
-    const kosElektrik = totalJam*0.25;
-    const kosSebenar = kosFilament + kosElektrik;
+  <div class="manage-tambahan">
+    <label>Harga Kemasan (RM):
+      <input type="number" id="hargaKemasan" step="0.01" value="0.20">
+    </label>
+    <label>Harga Cat (RM):
+      <input type="number" id="hargaCat" step="0.01" value="1.00">
+    </label>
+    <label>Harga Sanding (RM):
+      <input type="number" id="hargaSanding" step="0.01" value="0.20">
+    </label>
 
-    let kosPremiumExtra = 0; let senaraiPremium=[];
-    const hargaKemasan=parseFloat(document.getElementById("hargaKemasan").value)||0;
-    const hargaCat=parseFloat(document.getElementById("hargaCat").value)||0;
-    const hargaSandingFigura=parseFloat(document.getElementById("hargaSandingFigura").value)||0;
-    const hargaSandingPart=parseFloat(document.getElementById("hargaSandingPart").value)||0;
+    <div style="text-align:right; margin-top:6px;">
+      <button onclick="tambahFilament()">UPDATE</button>
+    </div>
+  </div>
 
-    if(document.getElementById("kemasan").checked){kosPremiumExtra+=hargaKemasan; senaraiPremium.push(`Kemasan (+RM${hargaKemasan.toFixed(2)})`);}
-    if(document.getElementById("cat").checked){kosPremiumExtra+=hargaCat; senaraiPremium.push(`Cat (+RM${hargaCat.toFixed(2)})`);}
-    if(document.getElementById("sanding").checked){
-      const sandingHarga=(jenisCetakan==="figura")? hargaSandingFigura: hargaSandingPart;
-      kosPremiumExtra+=sandingHarga;
-      senaraiPremium.push(`Sanding (+RM${sandingHarga.toFixed(2)})`);
-    }
+  <h3>Senarai Harga Filament:</h3>
+  <ul id="senaraiFilament"></ul>
+</div>
 
-    const hargaMin=Math.ceil(kosSebenar+1).toFixed(2);
-    const hargaStd=kosSebenar*(1+margin.standard);
-    const hargaPrem=kosSebenar*(1+margin.premium)+kosPremiumExtra;
-    const hargaStdBundar=Math.ceil(hargaStd).toFixed(2);
-    const hargaPremBundar=Math.ceil(hargaPrem).toFixed(2);
-    const tambahanText=senaraiPremium.length>0? senaraiPremium.join(", "):"Tiada tambahan";
-
-    document.getElementById("hasil").innerHTML=`
-      <h3>📊 Ringkasan Kiraan:</h3>
-      <p>🧩 Jenis Cetakan: <b>${jenisCetakan==="figura"?"Figura":"Part / Komponen"}</b></p>
-      <p>💡 Kos Filament: RM ${kosFilament.toFixed(2)}</p>
-      <p>⚡ Kos Waktu (${masaTeks} × RM0.25/jam): RM ${kosElektrik.toFixed(2)}</p>
-      <p>🔹 Jumlah Kos Sebenar: <b>RM ${kosSebenar.toFixed(2)}</b></p>
-      <hr>
-      <h3>💰 Anggaran Harga Jual:</h3>
-      <p>🟢 Minimum (Kos+RM1): <b>RM ${hargaMin}</b></p>
-      <p>🔵 Standard (+70%): <b>RM ${hargaStd.toFixed(2)}</b> <span class="bundar">→ RM ${hargaStdBundar}</span></p>
-      <p>🟣 Premium (+120% + tambahan): <b>RM ${hargaPrem.toFixed(2)}</b> <span class="bundar">→ RM ${hargaPremBundar}</span></p>
-      <p>🎨 Tambahan Premium: ${tambahanText}</p>`;
-  }
-
-  if(!/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)){
-    document.addEventListener("keypress", e=>{
-      if(e.key==="Enter"){ e.preventDefault(); document.getElementById("kiraBtn").click(); }
-    });
-  }
-
-  window.onload=kemaskiniDropdown;
-</script>
-
+<script src="script.js"></script>
 </body>
 </html>
