@@ -1,3 +1,4 @@
+/* ==== BASE STYLES ==== */
 body {
   font-family:"Poppins",sans-serif;
   background:#f8fafc;
@@ -179,6 +180,158 @@ input[type="text"], input[type="number"], select {
   width:120px;
 }
 
-@media (max-width:800px){
-  .time-inputs input { width:50px; }
+/* ==== MEDIA QUERY PHONE ==== */
+@media (max-width:600px){
+
+  body {
+    padding:1rem;
+  }
+
+  .container {
+    gap:15px;
+    width:95%;
+  }
+
+  .card {
+    padding:12px;
+    font-size:0.9rem;
+  }
+
+  .input-with-unit {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .input-with-unit span {
+    margin-left:0;
+    margin-top:2px;
+  }
+
+  .time-inputs {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .time-inputs input {
+    width:100%;
+  }
+
+  .hargaButtons {
+    flex-direction: column;
+  }
+
+  .hargaButtons button {
+    width:100%;
+  }
+
+  .manage-tambahan label,
+  .manage-filament label {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .manage-section input[type="number"],
+  .manage-section input[type="text"] {
+    width:100%;
+    margin-top:4px;
+  }
+
+  .kiraBtn {
+    font-size:0.95rem;
+    padding:10px 0;
+  }
+
+  .formula-container {
+    font-size:0.9rem;
+    padding:8px;
+  }
+}
+
+
+/* ==== COMPACT PHONE LAYOUT ==== */
+@media (max-width:600px){
+
+  body {
+    padding:0.8rem;
+  }
+
+  .container {
+    gap:10px;
+    width:100%;
+  }
+
+  .card {
+    padding:10px;
+    font-size:0.88rem;
+  }
+
+  .input-with-unit {
+    flex-direction: column;
+    align-items: flex-start;
+    gap:2px;
+  }
+
+  .input-with-unit span {
+    margin-left:0;
+    margin-top:0;
+    font-size:0.85rem;
+  }
+
+  .time-inputs {
+    flex-direction: column;
+    gap:4px;
+  }
+
+  .time-inputs span {
+    font-size:0.85rem;
+  }
+
+  .time-inputs input {
+    width:100%;
+  }
+
+  .hargaButtons {
+    flex-direction: column;
+    gap:4px;
+  }
+
+  .hargaButtons button {
+    width:100%;
+    font-size:0.88rem;
+    padding:6px 0;
+  }
+
+  .manage-tambahan label,
+  .manage-filament label {
+    flex-direction: column;
+    align-items: flex-start;
+    gap:2px;
+  }
+
+  .manage-section input[type="number"],
+  .manage-section input[type="text"] {
+    width:100%;
+    font-size:0.88rem;
+    margin-top:2px;
+  }
+
+  .kiraBtn {
+    font-size:0.88rem;
+    padding:8px 0;
+  }
+
+  .formula-container {
+    font-size:0.88rem;
+    padding:6px;
+  }
+
+  .hargaAkhir {
+    font-size:0.88rem;
+    padding:4px 6px;
+  }
+
+  .deleteBtn {
+    font-size:0.75rem;
+    padding:2px 4px;
+  }
 }

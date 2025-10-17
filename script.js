@@ -17,7 +17,6 @@ function kemaskiniDropdown(){
   updateSenaraiFilament();
 }
 
-// Auto set harga filament bila pilih
 function setHargaAuto(){
   const select = document.getElementById("filament");
   const jenis = select.value;
@@ -120,6 +119,5 @@ window.onload=function(){
   document.getElementById("toggleManageBtn").addEventListener("click",toggleManage);
   document.getElementById("toggleKosBtn").addEventListener("click",toggleKos);
   document.getElementById("kiraBtn").addEventListener("click",()=>showHarga('min'));
-
   document.getElementById("filament").addEventListener("change", setHargaAuto);
 };
