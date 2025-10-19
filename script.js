@@ -88,7 +88,7 @@ function showHarga(type){
   const kosSebenar=kosFilament+kosElektrik;
 
   const {kosPremiumExtra, senaraiPremium}=getPremiumExtra();
-  const margin={standard:0.7,premium:1.2};
+  const margin={standard:0.7,premium:0.7};
 
   let hargaTotal=0;
   if(type==='min') hargaTotal=Math.ceil(kosSebenar+1);

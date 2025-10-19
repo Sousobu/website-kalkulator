@@ -28,34 +28,36 @@
 
   <label>💰 Harga Filament:</label>
   <div class="input-with-unit">
-    <input type="text" id="harga">
     <span>RM</span>
+    <input type="text" id="harga">
   </div>
 
   <label>⏱️ Tempoh Cetakan:</label>
   <div class="time-inputs">
-    <input type="number" id="jam" placeholder="7"><span>Jam</span>
-    <input type="number" id="minit" placeholder="30"><span>Minit</span>
+    <span>Jam</span>
+    <input type="number" id="jam" placeholder="7">
+    <span>Minit</span>
+    <input type="number" id="minit" placeholder="Optional">
   </div>
 </div>
+
+ <button id="kiraBtn" class="kiraBtn">KIRA HARGA</button>
 
 <!-- Sub 2 -->
 <div class="card sub2">
   <div class="addons">
-    <strong>🧩 Tambahan (Premium Sahaja)</strong>
+    <strong>🧩 Tick jika pilih PREMIUM</strong>
     <div class="addon-group">
-      <label><input type="checkbox" id="kemasan"> Kemasan (+RM0.20)</label>
-      <label><input type="checkbox" id="cat"> Cat (+RM1.00)</label>
-      <label><input type="checkbox" id="sanding"> Sanding</label>
+      <label><input type="checkbox" id="kemasan"> Kemasan (Support) +RM0.20</label>
+      <label><input type="checkbox" id="cat"> Cat +RM1.00</label>
+      <label><input type="checkbox" id="sanding"> Sanding +RM0.20</label>
     </div>
   </div>
 
-  <button id="kiraBtn" class="kiraBtn">KIRA HARGA</button>
-
   <div class="hargaButtons">
     <button onclick="showHarga('min')">MINIMUM</button>
-    <button onclick="showHarga('std')">STANDARD</button>
-    <button onclick="showHarga('prem')">PREMIUM</button>
+    <button onclick="showHarga('std')">STANDARD (Bundar)</button>
+    <button onclick="showHarga('prem')">PREMIUM (Bundar)</button>
   </div>
 
   <div id="formulaContainer" class="formula-container">
@@ -71,6 +73,51 @@
   </div>
 </div>
 
+<script>
+  const checkboxes = document.querySelectorAll('.addon-group input[type="checkbox"]');
+  const minBtn = document.querySelector('button[onclick="showHarga(\'min\')"]');
+  const stdBtn = document.querySelector('button[onclick="showHarga(\'std\')"]');
+  const premBtn = document.querySelector('button[onclick="showHarga(\'prem\')"]');
+
+  function updateButtons() {
+    // Semak kalau mana-mana checkbox ditanda
+    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+
+    if (anyChecked) {
+      // Sembunyikan butang MINIMUM dan STANDARD
+      minBtn.style.display = 'none';
+      stdBtn.style.display = 'none';
+      // Pastikan PREMIUM nampak
+      premBtn.style.display = 'inline-block';
+    } else {
+      // Kalau tiada yang ditanda, semua butang nampak semula
+      minBtn.style.display = 'inline-block';
+      stdBtn.style.display = 'inline-block';
+      premBtn.style.display = 'inline-block';
+    }
+    
+    if (anyChecked) {
+      // Jika mana-mana premium option ditanda → hanya PREMIUM nampak
+      minBtn.style.display = 'none';
+      stdBtn.style.display = 'none';
+      premBtn.style.display = 'inline-block';
+    } else {
+      // Jika tiada ditanda → hanya MIN dan STD nampak
+      minBtn.style.display = 'inline-block';
+      stdBtn.style.display = 'inline-block';
+      premBtn.style.display = 'none';
+    }
+  }
+
+  // Pantau perubahan setiap checkbox
+  checkboxes.forEach(cb => cb.addEventListener('change', updateButtons));
+
+  // Jalankan sekali waktu mula
+  updateButtons();
+</script>
+
+
+
 <!-- Sub 3: Pengurusan Filament & Tambahan -->
 <button id="toggleManageBtn" class="manage-toggle">SHOW / HIDE PENGURUSAN</button>
 <div class="card manage-section" id="manageWrapper" style="display:none;">
@@ -80,6 +127,8 @@
     <label>Nama Filament Baru:
       <input type="text" id="filamentBaru">
     </label>
+  <div>
+  </div class="manage-harga">
     <label>Harga Filament (RM / 1000g):
       <input type="number" id="hargaBaru" step="0.01">
     </label>
